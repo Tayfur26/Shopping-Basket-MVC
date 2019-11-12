@@ -1,0 +1,1069 @@
+﻿
+
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var data = TempData["SepetViewModels"] as SepetViewModels;
+    var toptutar = TempData["ToplamTutar"] as SepetToplam;
+
+
+
+}
+@using StajMvc.ViewModels
+@model List<SepetViewItem>
+<script src="~/Content/js/script.js"></script>
+<script type="text/javascript">
+    function sepetbosalt() {
+        $.ajax
+        ({
+            url: "@Url.Action("Sepetbosaltj", "Home")",
+            type: 'POST',
+            data:  { },
+            dataType: 'json',
+            success: function (data) {
+
+                $("#basketbody").closest("div").html("");
+                $("#topfiyat").text(data);
+            }
+        });
+    };
+    function SepetGetir2() {
+        $.ajax
+            ({
+                url: "@Url.Action("Sepeteklej", "Home")",
+                type: 'POST',
+                data:
+                {
+                    isim: $('#modal-menu').find(".urunDetayBaslik1").text(),
+                    fiyat: $('#modalfiyat').text(),
+                    adet: $('#modaladet').val(),
+                },
+                dataType: 'json', success: function (data) {
+                    //var bakbi =
+                    //alert($(this).closest("#id" + data[2]).text());
+                    if (data[5] == "tekrar") {
+
+                        var sira = $('#id' + data[3]).find('b').text();
+                        $('#id' + data[3]).html('<t><p class="sepet_secilen"><b>' + sira.toString() + '</b>' + data[0] + '<span><input type="text" value="' + data[2] + '" class="basket-input" />x' + data[1] + '<a href="#" onclick="sepetsil(' + data[3] + ');" data-id="' + data[3] + '" type="button" class="SepetSil" value="' + data[3] + '"></a></span></p></t>');
+
+                        $("#topfiyat").text(data[4]);
+                    }
+                    else {
+                        var htmlContent = $("#basketbody").html();
+                        htmlContent = htmlContent +
+                            (
+                                '<div id="id' + data[3] + '"><t><p class="sepet_secilen"><b>' + data[6] + '</b>' + data[0] + '<span><input type="text" value="' + data[2] + '" class="basket-input" />x' + data[1] + '<a href="#" onclick="sepetsil(' + data[3] + ');" data-id="' + data[3] + '" type="button" class="SepetSil" value="' + data[3] + '"></a></span></p></t></div>'
+                            );
+                        $("#basketbody").html(htmlContent);
+                        $("#topfiyat").text(data[4]);
+                        $('#modal-menu').modal('hide');
+                    }
+
+                }
+            });
+        $(".toptutar").responseText
+    };
+    function sepetsil(id)
+    {
+        $.ajax
+            ({
+                url: "@Url.Action("Sepetsilj", "Home")",
+                type: 'POST',
+                data:
+                {
+                    id: id,
+                },
+                dataType: 'json',
+                success: function (datasil)
+                {
+                    $('#id' + id).remove();
+                    $("#topfiyat").text(datasil);
+                }
+            })
+    };
+    $(document).ready(function () {
+        //Sepete ekle listeden
+        $(".SepetGetir").click(function () {
+            $.ajax
+                ({
+                    url: "@Url.Action("Sepeteklej", "Home")",
+                    type: 'POST',
+                    data:
+                    {
+
+                        isim: $(this).closest("li").find(".urunadi").text(),
+                        fiyat: $(this).closest("li").find(".price").text(),
+                        adet: $(this).closest("li").find(".adet").val(),
+
+                    },
+                    dataType: 'json', success: function (data) {
+                        //var bakbi =
+                        //alert($(this).closest("#id" + data[2]).text());
+                        if (data[5] == "tekrar") {
+
+                            var sira = $('#id' + data[3]).find('b').text();
+                            $('#id' + data[3]).html('<t><p class="sepet_secilen"><b>' + sira.toString() + '</b>' + data[0] + '<span><input type="text" value="' + data[2] + '" class="basket-input" />x' + data[1] + '<a href="#" onclick="sepetsil(' + data[3] + ');" data-id="' + data[3] + '" type="button" class="SepetSil" value="' + data[3] + '"></a></span></p></t>');
+
+                            $("#topfiyat").text(data[4]);
+                        }
+                        else {
+                            @{
+
+                            }
+                            var htmlContent = $("#basketbody").html();
+                            htmlContent = htmlContent +
+                                (
+                                    '<div id="id' + data[3] + '"><t><p class="sepet_secilen"><b>' + data[6] + '</b>' + data[0] + '<span><input type="text" value="' + data[2] + '" class="basket-input" />x' + data[1] + '<a href="#" onclick="sepetsil(' + data[3] + ');" data-id="' + data[3] + '" type="button" class="SepetSil" value="' + data[3] + '"></a></span></p></t></div>'
+                                );
+                            $("#basketbody").html(htmlContent);
+                            $("#topfiyat").text(data[4]);
+                        }
+                    }
+                });
+        });
+        //Sepetten sil
+        $(".menu-link").click(function () {
+            var urunAdi = $(this).closest("li").find(".urunadi").text();
+            var urunaciklama = $(this).closest("li").find(".urunaciklama").text();
+            var urunFiyat = $(this).closest("li").find(".price").text();
+            var urunAdet = $(this).closest("li").find(".adet").val();
+
+            $(".urunDetayBaslik").text(urunAdi);
+            $("#modalurunaciklama").text(urunaciklama);
+            $("#modalfiyat").text(urunFiyat);
+        });
+    });
+</script>
+
+
+
+@*for (var i = 0; i < data.length; i++) {
+                    htmlContent +=
+                        '<p><b>' + data[i].Id'</b>@item.yemek<span><input type="text" value="@item.adet" class="basket-input" />x @item.fiyat <a href="@Url.Action("Sepetsil", "Home", new { id = item.Id })"></a></span></p>
+    <t class="toptutar" id="@item.fiyat"></t>
+
+
+
+                }
+                $("#basketbody").html(htmlContent);*@
+
+<div id="content">
+    <div class="container">
+        <div class="row">
+            <!--SOL SEPET/PROFİL BAŞLANGIÇ -->
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <div class="login-signup">
+                    <a href="#" class="btn btn-login">GİRİŞ YAP</a>
+                    <a href="#" class="btn btn-signup">ÜYE OL</a>
+                </div>
+
+                <!-- Giriş Yap Başlangıç -->
+                <div class="login-panel">
+                    <span class="login-panel-arrow"></span>
+                    <span class="login-panel-close"></span>
+                    <h1>GİRİŞ YAP</h1>
+                    <form>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="Kullanıcı Adı / E-Posta" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="text" class="form-control" placeholder="Şifre" aria-describedby="basic-addon1">
+                        </div>
+                        <button class="btn btn-login">GİRİŞ YAP</button>
+                        <hr style="opacity:0.4" />
+
+                        <div class="squaredThree">
+                            <input type="checkbox" value="None" id="squaredThree" name="check" />
+                            <label for="squaredThree"></label>
+                            <div>Beni Hatırla</div>
+                        </div>
+
+                        <a href="" class="sifermi-unuttum">Şifremi Unuttum</a>
+                    </form>
+                </div>
+                <!-- Giriş Yap Bitiş -->
+                <!-- Üye Ol Başlangıç -->
+                <div class="signup-panel">
+                    <span class="signup-panel-arrow"></span>
+                    <span class="signup-panel-close"></span>
+                    <h1>ÜYE OL</h1>
+                    <form>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="E-Posta Adresiniz" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="text" class="form-control" placeholder="Şifre" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="Şifre Tekrar" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="text" class="form-control" placeholder="Adınız" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="Soyadınız" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="date" class="form-control" placeholder="Dogum tarihiniz" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <select class="form-control bolge" aria-describedby="basic-addon1">
+                                <option>Semtiniz</option>
+                                <option>Bahçelievler</option>
+                                <option>Arifiye</option>
+                                <option>Yenibağlar</option>
+                                <option>Vişnelik</option>
+                                <option>Deliklitaş</option>
+                            </select>
+                        </div>
+                        <div class="squaredThree">
+                            <input type="checkbox" value="None" id="squaredThree2" name="check2" />
+                            <label for="squaredThree2"></label>
+                            <div>Kampanya, haber ve duyurluardan haberdar olmak için e-posta almak istiyorum</div>
+                        </div>
+                        <p>
+                            <button href="../Home/Yeniuye" class="btn btn-signup">ÜYE OL</button>
+                        </p>
+                    </form>
+                </div>
+                <!-- Üye Ol Bitiş -->
+                <!-- Sepet Başlangıç--
+                <div id="basket">
+                    <h4 class="icon1">SEPETİM<a href="#" class="delete-basket" type="button" data-container="body" data-toggle="popover" data-placement="top" data-content="SEPETİ SİL"></a></h4>
+                    <p class="sepet-bos"><img src="images/map-marker.png" /><span>BAHÇELİEVLER</span></p>
+                    <button class="btn btn-basket"><a href="../Siparis/Siparis"> <span></span>SEPETİ ONAYLA</a></button>
+                </div>
+                <!-- Sepet Bitiş -->
+                <!-- Sepet Dolu Başlangıç -->
+                <div id="basket">
+                    <h4 class="icon1">SEPETİM<a href="#" class="delete-basket" onclick="sepetbosalt();" type="button" data-container="body" data-toggle="popover" data-placement="top" data-content="SEPETİ SİL"></a></h4>
+                    <h4 class="icon2">
+                        SAĞLIK PİDE KEBAP YENİBAĞLAR
+                    </h4>
+                    <div class="basketbody" id="basketbody">
+
+                    </div>
+                    <h4 class="icon2">
+                        TOPLAM<span id="topfiyat" class="fiyat"></span>
+                    </h4>
+                    @*<h4 class="icon2">
+                        KAZANCINIZ<span class="fiyat">2.75</span></h4>*@
+                    <div class="sepet-bos"><img src="~/images/map-marker.png" /><span>BAHÇELİEVLER</span></div>
+                    <button class="btn btn-basket" onclick="@("window.location.href='" + @Url.Action("Siparis", "Siparis",TempData[""]) + "'");"><span></span>SEPETİ ONAYLA</button>
+                </div>
+                <!-- Sepet Dolu Bitiş -->
+
+            </div>
+            <!--SOL SEPET/PROFİL BİTİŞ -->
+            <!--SAĞ İÇERİK BAŞLANGIÇ -->
+            <div class="col-xs-12 col-sm-9 col-md-9">
+                <!-- BİLGİLER BAŞLANGIÇ -->
+                <div class="gray-bg restoran-bilgileri">
+                    <h1>Sağlık Pide & Kebap & Dönder, Yenibağlar </h1>
+                    <ol class="breadcrumb">
+                    </ol>
+                    <div class="detay-bilgiler">
+                        <div class="restoran-logo item">
+                            <img src="~/images/sagliklogo.png" />
+                        </div>
+                        <div class="item">
+                            <h4>Gönderim Bölgeleri<span id="gbol"></span></h4>
+                            <p>5.00<span class="tl"></span></p>
+                            <p>YENİBALAR</p>
+                            <span>Minimum Paket Tutarı</span>
+                            <!-- acılır pencere -->
+                            <div class="gbol">
+                                <table>
+                                    <span></span>
+                                    <span></span>
+                                    <tr>
+                                        <td>5.00 TL</td>
+                                        <td>A.Ü. Yunusemre Kampüsü , Bahçelievler , Eskibağlar , Güllük , Yenibağlar</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10.00 TL</td>
+                                        <td>Fatih , Ömerağa , Tunalı , Zafer</td>
+                                    </tr>
+                                    <tr>
+                                        <td>20.00 TL</td>
+                                        <td>Ertuğrulgazi , Sütlüce , Şirintepe</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- acılır pencere -->
+                        </div>
+                        <div class="item">
+                            <h4>Çalışma Saatleri<span id="csaat"></span></h4>
+                            <p>11:30 - 23:15</p>
+                            <p>PAZARTESİ - PAZAR</p>
+                            <!-- acılır pencere -->
+                            <div class="csaat">
+                                <table class="table">
+                                    <tr><span></span><span></span>
+                                    <tr>
+                                    <tr>
+                                        <td>Pazartesi</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Salı</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Çarşamba</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Perşembe</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cuma</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cumartesi</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pazar</td>
+                                        <td>11:30 - 23:15</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- acılır pencere -->
+                        </div>
+                        @*<div class="item">
+                                <h4>Restouran Puanları</h4>
+                                <ul class="restoran-puanlari">
+                                    <li>8.4<span>HIZ</span></li>
+                                    <li>8.4<span>SERVİS</span></li>
+                                    <li>8.4<span>LEZZET</span></li>
+                                </ul>
+                            </div>*@
+                    </div>
+                </div>
+                <!-- BİLGİLER BİTİŞ -->
+                <!-- TAB BAŞLANGIÇ-->
+                <div class="menu-tab gray-bg">
+                    <!-- Tab Butonlar Başlangıç -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation"><a href="#menu" aria-controls="home" role="tab" data-toggle="tab"><span class="tabmenu1"></span>MENÜ</a></li>
+                        <li role="presentation"><a href="#kampanyalar" aria-controls="profile" role="tab" data-toggle="tab"><span class="tabmenu2"></span>KAMPANYALAR</a></li>
+                        @*<li role="presentation"><a href="#kullaniciyorumlari" aria-controls="messages" role="tab" data-toggle="tab"><span class="tabmenu3"></span>KULLANICI YORUMLARI</a></li>*@
+                        <li role="presentation"><a href="#kampanyalar" aria-controls="profile" role="tab" data-toggle="tab"><span class="tabmenu4"></span>BİLGİLER</a></li>
+                    </ul>
+                    <!-- Tab Buton Bitiş -->
+                    <!-- Tab İçerik Başlangıç-->
+                    <div class="tab-content">
+                        <!-- MENÜ BAÇŞALNGIÇ -->
+                        <div role="tabpanel" class="tab-pane active" id="menu">
+                            <!-- Menü İçerik -->
+                            <ul class="hizli-erisim">
+                                <li><a href="#h1" data-id="h1">KAHVALTILAR</a></li>
+                                <li><a href="#h2" data-id="h2">LOKMA ÇEŞİTLERİ</a></li>
+                                <li><a href="#h3" data-id="h3">DÜRÜM ÇEŞİTLERİ</a></li>
+                                <li><a href="#h4" data-id="h4">SAÇ KAVURMA ÇEŞİTLERİ</a></li>
+                                <li><a href="#h5" data-id="h5">SAĞLIK SPECİAL ÇEŞİTLERİ</a></li>
+                                <li><a href="#h6" data-id="h6">PİZZA ÇEŞİTLERİ</a></li>
+                                <li><a href="#h7" data-id="h7">SALATA ÇEŞİTLERİ</a></li>
+                                <li><a href="#h8" data-id="h8">TATLILAR</a></li>
+                                <li><a href="#h9" data-id="h9">İÇECEKLER</a></li>
+                                <li><a href="#h10" data-id="h10">APERATİFLER</a></li>
+
+                            </ul>
+
+                            <div class="menu">
+                                <h1 class="title" id="h1">KAHVALTILAR</h1>
+                                <ul>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Mini Kahvaltı</c>
+                                            <span class="urunaciklama">Beyaz peynir, kaşar, zeytin, yumurta, tereyağ, bal, söğüş, fincan çay</span>
+                                        </a>
+                                        <div><c class="price">12.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Sağlık Kahvaltı</c>
+                                            <span class="urunaciklama">Otlu,kaşar,krem peynir, tereyağ, salam, jambon, söğüş, bal, reçel, sigara böreği, patates, zeytin, yumurta, fincan çay</span>
+                                        </a>
+                                        <div><c class="price">14.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1"/>
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Tatlı Kahvaltı</c>
+                                            <span class="urunaciklama">Bal - Kaymak</span>
+                                        </a>
+                                        <div><c class="price">10.00</c> TL</div>
+                                    </li>
+                                </ul>
+                                <h1 class="title" id="h2">LOKMA ÇEŞİTLERİ</h1>
+                                <ul>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Lokma Kebabı</c>
+                                        </a>
+                                        <span class="urunaciklama"></span>
+                                        <div><c class="price">21.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Izgara Lokma</c>
+                                        </a>
+                                        <span class="urunaciklama"></span>
+                                        <div><c class="price">10.50</c> TL</div>
+
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Piliç Şiş Lokma</c>
+                                        </a>
+                                        <span class="urunaciklama"></span>
+
+                                        <div><c class="price">17.50</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Et Şiş Lokma</c>
+                                        </a>
+                                        <span class="urunaciklama"></span>
+                                        <div><c class="price">27.50 </c>TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Lokma Döner</c>
+                                        </a>
+                                        <span class="urunaciklama"></span>
+
+
+                                        <div><c class="price">21</c>.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Beyti Lokma</c>
+                                        </a>
+                                        <span class="urunaciklama"></span>
+                                        <div><c class="price">21</c>.00 TL</div>
+                                    </li>
+
+                                </ul>
+                                <h1 class="title" id="h3">DÜRÜM ÇEŞİTLERİ</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Adana Dürüm</c>
+                                        </a>
+                                        <div><c class="price">17.50</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Urfa Dürüm</c>
+                                        </a>
+                                        <div>17.50 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Et Şiş Dürüm</c>
+                                        </a>
+                                        <div><c class="price">23.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Piliç Şiş Dürüm</c>
+                                        </a>
+                                        <div><c class="price">16.50</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Köfte Dürüm</c>
+                                        </a>
+                                        <div><c class="price">15.00</c> TL</div>
+                                    </li>
+                                </ul>
+                                <h1 class="title" id="h4">SAÇ KAVURMA ÇEŞİTLERİ</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Sac Kavurma Et</c>
+                                        </a>
+                                        <div><c class="price">22.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Sac Kavurma Et (Kaşarlı)</c>
+                                        </a>
+                                        <div><c class="price">23.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Sac Kavurma Piliç</c>
+                                        </a>
+                                        <div><c class="price">16.50</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Sac Kavurma Piliç (Kaşarlı)</c>
+                                        </a>
+                                        <div><c class="price">17.50</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi">Sucuklu Sac (Kaşarlı)</c>
+                                        </a>
+                                        <div><c class="price">22.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Mantarlı Sac (Kaşarlı)</c>
+                                        </a>
+                                        <div><c class="price">18.50</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Özel Sac</c>
+                                        </a>
+                                        <div><c class="price">27.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Et Sote</c>
+                                        </a>
+                                        <div><c class="price">22.00</c> TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus SepetGetir"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            <c class="urunadi"> Piliç Sote</c>
+                                        </a>
+                                        <div><c class="price">16.50</c> TL</div>
+                                    </li>
+                                </ul>
+                                /////////           <h1 class="title" id="h5">SAĞLIK SPECİAL ÇEŞİTLERİ</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sağlık Pide
+                                            <span>Pastırma, sucuk, salam, mantar, kaşar</span>
+                                        </a>
+                                        <div>19.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sağlık Konfor
+                                            <span>Pastırma, sucuk, kuşbaşı, et, salam, kaşar</span>
+                                        </a>
+                                        <div>22.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sağlık Lokma
+                                            <span>Pastırma, salam, sucuk, kaşar</span>
+                                        </a>
+                                        <div>20.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sağlık Sac
+                                            <span>Pastırma, sucuk, kuşbaşı, et, salam, kaşar</span>
+                                        </a>
+                                        <div>22.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sağlık Pizza
+                                            <span>Pastırma, salam, sucuk, mantar, kaşar</span>
+                                        </a>
+                                        <div>20.00 TL</div>
+                                    </li>
+                                </ul>
+                                <h1 class="title" id="h6">PİZZA ÇEŞİTLERİ</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sucuklu Pizza
+                                        </a>
+                                        <div>18.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sosisli Pizza
+                                        </a>
+                                        <div>17.50 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Salamlı Pizza
+                                        </a>
+                                        <div>17.50 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Mantarlı Pizza
+                                        </a>
+                                        <div>16.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Karışık Pizza
+                                            <span>Kuşbaşı et, sucuk, mantar, salam, kaşar</span>
+                                        </a>
+                                        <div>18.50 TL</div>
+                                    </li>
+                                </ul>
+                                <h1 class="title" id="h7">SALATA ÇEŞİTLERİ</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Mevsim Salata
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Rus Salata
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Ezme Salata
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Sağlık Salata
+                                            <span>Duble</span>
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                </ul>
+                                <h1 class="title" id="h8">TATLILAR</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Künefe
+
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Kaymaklı Ekmek Kadayıfı
+
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Fırın Sütlaç
+
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            KemalPaşa
+
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Ballı Cevizli Sütlaç
+
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Tahinli Cevizli Kaymaklı Ekmek Kadayıfı
+
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Kaymaklı Künefe
+
+                                        </a>
+                                        <div>10.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Kaymaklı Kemalpaşa Tatlısı
+
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Ekmek Kadayıfı
+
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Supangle
+
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Dondurmalı Künefe
+
+                                        </a>
+                                        <div>10.00 TL</div>
+                                    </li>
+
+                                </ul>
+                                <h1 class="title" id="h9">İÇECEKLER</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Kola
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Yedigün
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Ice Tea
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Gazoz
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Meyve Suyu
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Ayran(Büyük)
+                                        </a>
+                                        <div>3.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Soda
+                                        </a>
+                                        <div>2.50 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Şalgam Suyu
+                                        </a>
+                                        <div>3.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Meyveli Soda
+                                        </a>
+                                        <div>4.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Şıra(Üzüm Suyu)
+                                        </a>
+                                        <div>3.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Su
+                                        </a>
+                                        <div>1.00 TL</div>
+                                    </li>
+
+                                </ul>
+                                <h1 class="title" id="h10">APERATİFLER</h1>
+                                <ul id="">
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Patates Tava
+                                        </a>
+                                        <div>8.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Çiğ Köfte
+                                        </a>
+                                        <div>5.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Pilav
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Yoğurt
+                                        </a>
+                                        <div>5.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            İçli Köfte
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Karışık Meze Çeşitleri
+                                        </a>
+                                        <div>5.00 TL</div>
+                                    </li>
+                                    <li>
+                                        <input type="text" class="adet" value="1" />
+                                        <a href="#" class="plus"></a>
+                                        <a href="#modal-menu" data-toggle="modal" class="menu-link">
+                                            Bulgur Pilavı
+                                        </a>
+                                        <div>6.00 TL</div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Menü İçerik -->
+                            <!--MENÜ MODAL BAŞLANGIÇ -->
+                            <div id="modal-menu" class="modal fade bs-example-modal-lg" data-easein="bounceIn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content modal-menu">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            <center><h4 class="modal-title urunDetayBaslik" title="modal-title" id=""></h4></center>
+                                        </div>
+                                        <div class="modal-body edit-content">
+                                            <form class="form-horizontal">
+                                                <div class="row">
+
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 urun-img">
+                                                        <center><h4 class="modal-title urunDetayBaslik urunDetayBaslik1"></h4></center>
+                                                        <p id="modalurunaciklama"></p>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-9 col-md-9">
+                                                        <div class="row">
+                                                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label ">ADET :</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" id="modaladet" value="1" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="modal-btn"><c id="modalfiyat"></c><a href="#" onclick="SepetGetir2();" class="btn">SEPETE EKLE</a></div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MENÜ MODAL BİTİŞ -->
+                        </div>
+                        <!-- MENÜ BİTİŞ -->
+                        <!-- KAMPANYALAR BAŞLANGIÇ -->
+                        <div role="tabpanel" class="tab-pane" id="kampanyalar">
+                            <div class="row kampanyalar">
+                                <ul class="kampanyalar2">
+                                    <li><p><a></a>Mobil Uygulama üzerinden verilen ilk siparişlerde %25 indirim. Iphone Uygulaması : https://itunes.apple.com/app/id818796864</p></li>
+
+                                </ul>
+                            </div>
+                            <!-- KAMPANYALAR BİTİŞ -->
+                            <!-- BİLGİLER BAŞLANGIÇ -->
+                            <div role="tabpanel" class="tab-pane" id="bilgiler">
+                                <!-- Bilgiler içerik -->
+                                <h1 class="title">ÖDEME ŞEKİLLERİ</h1>
+                                <ul class="bilgiler-odeme">
+                                    <li><img src="~/images/odeme2.png" /><span>NAKİT</span></li>
+                                </ul>
+
+                                <h1 class="title">FİRMA BİLGİLERİ</h1>
+                                <ul class="bilgiler-firma">
+                                    <li><span>İŞLETME ADI :</span> Sağlık Pide Kebap</li>
+                                    <li><span>ADRESİ :</span> İstiklal Mh. Başarılı Sk. No: 35 ESKİŞEHİR</li>
+                                    <li><span>TELEFON NO :</span> 0 222 230 11 99 - 230 43 90</li>
+
+                                </ul>
+                                <!-- Bilgiler içerik -->
+                            </div>
+                            <!-- BİLGİLER BİTİŞ -->
+                        </div>
+                        <!-- tab İçerik Bitiş-->
+                    </div>
+                    <!-- TAB BİTİŞ-->
+
+                </div>
+                <!--SAĞ İÇERİK BİTİŞ -->
+            </div>
+        </div>
+    </div>
+    <!-- CONTENT BİTİŞ -->
+
+</div>
+
+

@@ -1,0 +1,408 @@
+﻿@{
+
+    ViewBag.Title = "Siparis";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var data = TempData["SepetViewModels"] as SepetViewModels;
+    var toptutar = TempData["ToplamTutar"] as SepetToplam;
+}
+@using StajMvc.ViewModels
+
+    <script type="text/javascript">
+    function sepetbosalt() {
+        $.ajax
+        ({
+            url: "@Url.Action("Sepetbosaltj", "Home")",
+            type: 'POST',
+            data:  { },
+            dataType: 'json',
+            success: function (data) {
+
+                $("#basketbody").closest("div").html("");
+                $("#topfiyat").text(data);
+            }
+        });
+    }
+
+
+
+    function sepetsil(id)
+    {
+        $.ajax
+            ({
+                url: "@Url.Action("Sepetsilj", "Siparis")",
+                type: 'POST',
+                data:
+                {
+                    id: id,
+                },
+                dataType: 'json',
+                success: function (datasil)
+                {
+                    $('#id' + id).remove();
+                    $('#id1' + id).remove();
+                    $("#topfiyat").text(datasil);
+                    $("#topfiyat1").text(datasil);
+                }
+            })
+    };
+    $(document).ready(function ()
+    {
+
+
+        $(document).ready(function ()
+        {
+
+            @*alert(@TempData["ToplamTutar"].ToString());*@
+            @{
+                @:$('#topfiyat1').text(@TempData["ToplamTutar"]);
+             }
+        @*console.log('@data.Find(c=>c.Id==1).yemek');*@
+            $("#basketbody").html(htmlContent);
+
+        });
+    });
+
+    </script>
+
+<div id="content">
+    <div class="container">
+        <div class="row">
+            <!--SOL SEPET/PROFİL BAŞLANGIÇ -->
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <div class="login-signup">
+                    <a href="#" class="btn btn-login">GİRİŞ YAP</a>
+                    <a href="#" class="btn btn-signup">ÜYE OL</a>
+                </div>
+
+                <!-- Giriş Yap Başlangıç -->
+                <div class="login-panel">
+                    <span class="login-panel-arrow"></span>
+                    <span class="login-panel-close"></span>
+                    <h1>GİRİŞ YAP</h1>
+                    <form>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="Kullanıcı Adı / E-Posta" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="text" class="form-control" placeholder="Şifre" aria-describedby="basic-addon1">
+                        </div>
+                        <button class="btn btn-login">GİRİŞ YAP</button>
+                        <hr style="opacity:0.4" />
+
+                        <div class="squaredThree">
+                            <input type="checkbox" value="None" id="squaredThree" name="check" />
+                            <label for="squaredThree"></label>
+                            <div>Beni Hatırla</div>
+                        </div>
+
+                        <a href="" class="sifermi-unuttum">Şifremi Unuttum</a>
+                    </form>
+                </div>
+                <!-- Giriş Yap Bitiş -->
+                <!-- Üye Ol Başlangıç -->
+                <div class="signup-panel">
+                    <span class="signup-panel-arrow"></span>
+                    <span class="signup-panel-close"></span>
+                    <h1>ÜYE OL</h1>
+                    <form>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="E-Posta Adresiniz" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="text" class="form-control" placeholder="Şifre" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="Şifre Tekrar" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="text" class="form-control" placeholder="Adınız" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="user"></span>
+                            <input type="text" class="form-control" placeholder="Soyadınız" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <input type="date" class="form-control" placeholder="Dogum tarihiniz" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon" id="lock"></span>
+                            <select class="form-control bolge" aria-describedby="basic-addon1">
+                                <option>Semtiniz</option>
+                                <option>Bahçelievler</option>
+                                <option>Bahçelievler</option>
+                                <option>Bahçelievler</option>
+                                <option>Bahçelievler</option>
+                                <option>Bahçelievler</option>
+                            </select>
+                        </div>
+                        <div class="squaredThree">
+                            <input type="checkbox" value="None" id="squaredThree2" name="check2" />
+                            <label for="squaredThree2"></label>
+                            <div>Kampanya, haber ve duyurluardan haberdar olmak için e-posta almak istiyorum</div>
+                        </div>
+                        <p>
+                            <button class="btn btn-signup">ÜYE OL</button>
+                        </p>
+                    </form>
+                </div>
+                <!-- Üye Ol Bitiş -->
+                <!-- Sepet Başlangıç-->
+                
+                <div id="basket">
+                    <h4 class="icon1">SEPETİM<a href="#" class="delete-basket" type="button" data-container="body" data-toggle="popover" data-placement="top" data-content="SEPETİ SİL"></a></h4>
+                    <h4 class="icon2">
+                        SAĞLIK PİDE KEBAP YENİBAĞLAR
+                    </h4>
+
+                    @{ if (data != null)
+                        {
+                            @:<div class="basketbody" id="basketbody">
+                                double toplamtutar = 0;
+                                foreach (var item in data)
+                                {
+                                    if (item.Id == 0)
+                                    {
+                                        continue;
+                                    }
+                                    var adet = item.adet;
+                                    var yemek = item.yemek;
+                                    var fiyat = item.fiyat;
+                                    var id = item.Id;
+                                    @:<div id="@("id" + id.ToString())"><p><b>@id</b>@yemek<span><input type="text" value=@adet class="basket-input" />x @fiyat<a href="#" class="SepetSil" onclick="sepetsil(@id)" value=@id data-id=@id type="button"></a></span></p></div>
+                                    toplamtutar += item.adet * item.fiyat;
+                                //} '<div id="id'+ data[3] +'"><t><p class="sepet_secilen"><b>'+data[6]+'</b>' + data[0] + '<span><input type="text" value="' + data[2] + '" class="basket-input" />x' + data[1] + '<a href="#" onclick="sepetsil(' + data[3] + ');" data-id="' + data[3] + '" type="button" class="SepetSil" value="' + data[3] + '"></a></span></p></t></div>'
+                            }
+
+                        @:</div>
+                        
+                           @: <h4 class="icon2">
+                              @:TOPLAM<span id="topfiyat" class="fiyat">@toplamtutar.ToString()</span>
+                            @:</h4>
+                            }
+                        
+                    }
+                    <div class="sepet-bos"><img src="~/images/map-marker.png" /><span>BAHÇELİEVLER</span></div>
+                    <a href="#m1" data-id="m1" class="btn btn-basket"><span></span>SEPETİ ONAYLA</a>
+                </div>
+                <!-- Sepet Dolu Bitiş -->
+
+            </div>
+            <!--SOL SEPET/PROFİL BİTİŞ -->
+            <!--SAĞ İÇERİK BAŞLANGIÇ -->
+            <div class="col-xs-12 col-sm-9 col-md-9">
+                <!-- SİPARİŞ ONAY tablo başlangıç -->
+                <div class="gray-bg table-odeme">
+                    <h1>SAĞLIK PİDE & KEBAP & DÖNDER, YENİBAĞLAR</h1>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>YEMEK</th>
+                                <th>FİYAT</th>
+                                <th>ADET</th>
+                                <th>TUTAR</th>
+                                <th>SİL</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ 
+                                if (data != null)
+                                {
+                                    foreach (var sepet in data)
+                                    {
+                                        if (sepet.Id == 0)
+                                        {
+                                            continue;
+                                        }
+                                                        <tr id="@("id1"+sepet.Id.ToString())">
+                                                            
+                                                                <td>@sepet.yemek</td>
+                                                                <td>@sepet.fiyat TL</td>
+                                                                <td><input type="text" class="adet" value=@sepet.adet /></td>
+                                                                <td>@(sepet.adet * sepet.fiyat) TL</td>
+                                                                <td>
+                                                                    <button class="btn btn-delete" type="button" data-container="body" data-toggle="popover" data-placement="top" data-content="SİL" onclick="sepetsil(@sepet.Id)" value="@sepet.Id" data-id="@sepet.Id"></button>
+                                                                </td>
+                                                            
+                                                        </tr>
+                                    }
+                                }
+                            }
+                           
+                        </tbody>
+                    </table>
+                    <p class="text-right odeme-tutar"><span>TOPLAM :<span id="topfiyat1"> 27.50</span> TL</span></p>
+                </div>
+                <!-- SİPARİŞ ONAY tablo bitiş -->
+
+                <!--ADRES DUZENLE MODAL BAŞLANGIÇ -->
+                <div id="modal-adresekleme" class="modal" data-easein="bounceIn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                <h4 class="modal-title">ADRES EKLE</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Adınız :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Soyadınız :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">E-Posta Adresiniz :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="">
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Adres Türü :</label>
+                                        <div class="col-sm-9">
+                                            <div class="btn-radio">
+                                                <input type="radio" id="f-option4" name="selector" />
+                                                <label for="f-option4">Ev</label>
+                                                <div class="check"></div>
+                                            </div>
+                                            <div class="btn-radio">
+                                                <input type="radio" id="f-option5" name="selector" />
+                                                <label for="f-option5">İş</label>
+                                                <div class="check"></div>
+                                            </div>
+                                            <div class="btn-radio">
+                                                <input type="radio" id="f-option6" name="selector" />
+                                                <label for="f-option6">Kampüs</label>
+                                                <div class="check"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Adres Başlığı :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Cep Telefonu :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Telefon No(2) :</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sempt :</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control">
+                                                <option>Bahçelievler</option>
+                                                <option>Bahçelievler</option>
+                                                <option>Bahçelievler</option>
+                                                <option>Bahçelievler</option>
+                                                <option>Bahçelievler</option>
+                                                <option>Bahçelievler</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Adres :</label>
+                                        <div class="col-sm-9">
+                                            <textarea type="text" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Adres Tarifi :</label>
+                                        <div class="col-sm-9">
+                                            <textarea type="text" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-submit btn-c">KAYDET</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADRES DUZENLE MODAL BİTİŞ -->
+                <!-- Adreslerim bitiş-->
+                <!-- SİPARİŞ ONAY adreslerim bitiş -->
+                <!-- SİPARİŞ ONAY ödeme seçenekleri başlangıç -->
+                <div class="gray-bg odeme-secenekleri">
+                    <h1>ÖDEME SEÇENEKLERİ</h1>
+                   
+                    <div class="odeme">
+                        <h2>KAPIDA ÖDEME</h2>
+                        <span class="odeme2">
+                            <div class="btn-radio">
+                                <input type="radio" id="f-option8" name="selector" />
+                                <label for="f-option8">Nakit</label>
+                                <div class="check"></div>
+                            </div>
+                            <div class="btn-radio">
+                                <input type="radio" id="f-option10" name="selector" />
+                                <label for="f-option10">Ticket Restoran Yemek Fişi</label>
+                                <div class="check"></div>
+                            </div>
+                            <div class="btn-radio">
+                                <input type="radio" id="f-option11" name="selector" />
+                                <label for="f-option11">Kredi Kartı / Banka Kartı İle Ödeme</label>
+                                <div class="check"></div>
+                            </div>
+                            <div class="btn-radio">
+                                <input type="radio" id="f-option12" name="selector" />
+                                <label for="f-option12">Sodexo yemek Fişi</label>
+                                <div class="check"></div>
+                            </div>
+                        </span>
+                    </div>
+                   
+                    <!-- SİPARİŞ ONAY ödeme seçenekleri bitiş -->
+                    <!-- SİPARİŞ ONAY sipariş notu bitiş -->
+                    <div class="gray-bg siparis-notu">
+                        <h1>SİPARİŞ NOTU</h1>
+                        <div class="form-group">
+                            <textarea type="text" rows="4" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <!-- SİPARİŞ ONAY sipariş notu bitiş -->
+                    <div class="gray-bg">
+                        <p class="siparis-aciklama">Eğer sepetinizde değişiklik yapmak istiyorsanız lütfen bu işlemlerinizi bitirmeden "siparişi ver" butonuna basmayınız. Butona basmanız siparişi vermeniz anlamına gelmektedir. Siparişiniz, ilgili restorana yazılı olarak anında iletilecektir.</p>
+                    </div>
+                    <p class="text-center">
+                        <a class="btn btn-submit" id="m1" Onclick="location.href='@Url.Action("Index","Home")'" >SİPARİŞ VER</a>
+                    </p>
+                </div>
+            </div>
+            <!--SAĞ İÇERİK BİTİŞ -->
+        </div>
+    </div>
+
+
+</div>

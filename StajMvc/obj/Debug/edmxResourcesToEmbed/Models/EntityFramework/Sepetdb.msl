@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DenemeMVCModelStoreContainer" CdmEntityContainer="MVCEntities">
+    <EntitySetMapping Name="Sepet">
+      <EntityTypeMapping TypeName="DenemeMVCModel.Sepet">
+        <MappingFragment StoreEntitySet="Sepet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="sepetyemek" ColumnName="sepetyemek" />
+          <ScalarProperty Name="sepetfiyat" ColumnName="sepetfiyat" />
+          <ScalarProperty Name="sepetadet" ColumnName="sepetadet" />
+          <ScalarProperty Name="sepettutar" ColumnName="sepettutar" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
